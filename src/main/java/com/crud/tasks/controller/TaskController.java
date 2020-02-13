@@ -6,10 +6,7 @@ import com.crud.tasks.mapper.TaskMapper;
 import com.crud.tasks.service.DbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
@@ -43,8 +40,8 @@ public class TaskController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "getTask")
-    public TaskDto getTask(Long taskId) {
-        return mapper.mapToTaskDto(service.getTaskWithID(taskId));
+    public TaskDto getTask(@RequestParam Long taskId) throws TaskNotFoundException {
+        return mapper.mapToTaskDto(service.getTaskWithID(taskId).orElseThrow(TaskNotFoundException::new));
 
 
     }
