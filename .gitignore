@@ -1,4 +1,5 @@
 HELP.md
+application-local.properties
 
 .gradle
 build/
@@ -32,4 +33,3 @@ out/
 ### VS Code ###
 .vscode/
 
-application-local.properties
