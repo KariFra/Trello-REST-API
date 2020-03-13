@@ -25,7 +25,7 @@ dependencies {
     }
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
     implementation 'junit:junit:4.12'
-    implementation 'junit:junit:4.12'
+
 
 }
 
