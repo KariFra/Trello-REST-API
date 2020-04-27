@@ -40,8 +40,10 @@ public class TrelloMapperTest {
         List<TrelloBoard> trelloBoards = trelloMapper.mapToTrelloBoard(trelloBoardDto);
 
         //Than
-        assertTrue(trelloBoardDto.size()==2);
-        assertTrue(trelloBoards.size()==2);
+        assertEquals(2,trelloBoardDto.size());
+        assertEquals(2,trelloBoards.size());
+        assertEquals("Second board",trelloBoardDto.get(1).getName());
+        assertEquals("First board",trelloBoards.get(0).getName());
     }
 
     @Test
@@ -58,8 +60,10 @@ public class TrelloMapperTest {
         List<TrelloList> lists = trelloMapper.mapToTrelloList(listDtos);
 
         //Than
-        assertTrue(listDtos.size()==2);
-        assertTrue(lists.size()==2);
+        assertEquals(2,listDtos.size());
+        assertEquals(2,lists.size());
+        assertEquals("one",listDtos.get(0).getName());
+        assertEquals("two",lists.get(1).getName());
     }
 
     @Test
@@ -72,8 +76,8 @@ public class TrelloMapperTest {
         TrelloCard card = trelloMapper.mapToCard(cardDto);
 
         //Than
-        assertTrue(cardDto.getPos()=="1");
-        assertTrue(card.getPos()=="1");
+        assertEquals("1",cardDto.getPos());
+        assertEquals("1",card.getPos());
     }
 
 
