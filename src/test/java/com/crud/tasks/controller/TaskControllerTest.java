@@ -5,6 +5,7 @@ import com.crud.tasks.domain.TaskDto;
 import com.crud.tasks.mapper.TaskMapper;
 import com.crud.tasks.service.DbService;
 import com.google.gson.Gson;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -15,13 +16,17 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.util.NestedServletException;
 
+
+import javax.validation.constraints.AssertTrue;
 
 import static org.hamcrest.Matchers.is;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -47,8 +52,10 @@ public class TaskControllerTest {
     public void shouldGetTasks() throws Exception{
         //Given
     List<TaskDto> list = new ArrayList<>();
+    List<Task> taskList = new ArrayList<>();
     list.add(new TaskDto(1L,"task","content"));
-   when(mapper.mapToTaskDtoList(service.getAllTasks())).thenReturn(list);
+   when(service.getAllTasks()).thenReturn(taskList);
+   when(mapper.mapToTaskDtoList(taskList)).thenReturn(list);
 
         //When & Than
         mockMvc.perform(get("/v1/task/getTasks").contentType(MediaType.APPLICATION_JSON))
@@ -80,13 +87,16 @@ public class TaskControllerTest {
     @Test
     public void noTask() throws Exception {
         //Given
-        when(service.getTaskWithID(1L)).thenReturn(Optional.of(new Task()));
-        when(mapper.mapToTaskDto(new Task())).thenReturn(new TaskDto());
+        when(service.getTaskWithID(1L)).thenReturn(Optional.empty());
 
         //When & Than
-        mockMvc.perform(get("/v1/task/getTask?taskId=1")
-                .characterEncoding("UTF-8"))
-                .andExpect(status().is(200));
+        try {
+            mockMvc.perform(get("/v1/task/getTask?taskId=1")
+                    .characterEncoding("UTF-8"))
+                    .andExpect(status().is(200));
+        } catch (NestedServletException e){
+            assertTrue(e.getCause() instanceof TaskNotFoundException);
+        }
 
     }
 
@@ -96,11 +106,11 @@ public class TaskControllerTest {
         TaskDto taskDto = new TaskDto(1L,"task","content");
         Task task = new Task(1L,"task","content");
 
-
-        when(service.saveTask(mapper.mapToTask(taskDto))).thenReturn(task);
+        when(mapper.mapToTask(any(TaskDto.class))).thenReturn(task);
+        when(service.saveTask(task)).thenReturn(task);
 
         Gson gson = new Gson();
-        String jsonContent = gson.toJson(task);
+        String jsonContent = gson.toJson(taskDto);
         //When & Than
         mockMvc.perform(post("/v1/task/createTask")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -131,10 +141,13 @@ public class TaskControllerTest {
         Task task = new Task(1L,"task","content");
         TaskDto taskDto = new TaskDto(1L,"task","content");
 
-        when(mapper.mapToTaskDto(service.saveTask(mapper.mapToTask(any(TaskDto.class))))).thenReturn(taskDto);
+
+        when(mapper.mapToTask(any(TaskDto.class))).thenReturn(task);
+        when(service.saveTask(task)).thenReturn(task);
+        when(mapper.mapToTaskDto(task)).thenReturn(taskDto);
 
         Gson gson = new Gson();
-        String jsonContent = gson.toJson(task);
+        String jsonContent = gson.toJson(taskDto);
         //When & Than
         mockMvc.perform(put("/v1/task/updateTask")
                 .contentType(MediaType.APPLICATION_JSON)
