@@ -32,7 +32,7 @@ public class MailCreatorService {
         context.setVariable("message",message);
         context.setVariable("tasks_url","http://localhost:8888/tasks_frontend");
         context.setVariable("button","Visit website");
-        context.setVariable("admin_name", adminConfig.getAdminName());
+        context.setVariable("admin_name", "Kari");
         context.setVariable("goodbye","Your Task App");
         context.setVariable("detailsPartOne",adminConfig.getCompanyName());
         context.setVariable("detailsPartTwo",adminConfig.getCompanyMail());
