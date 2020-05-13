@@ -71,7 +71,7 @@ public class TaskControllerTest {
         when(mapper.mapToTaskDto(task)).thenReturn(new TaskDto(1L,"task1","content1"));
 
         //When & Than
-        mockMvc.perform(get("/v1/tasks?taskId=1")
+        mockMvc.perform(get("/v1/tasks/1")
                 .characterEncoding("UTF-8"))
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.id",is(1)))
@@ -86,7 +86,7 @@ public class TaskControllerTest {
 
         //When & Than
         try {
-            mockMvc.perform(get("/v1/tasks?taskId=1")
+            mockMvc.perform(get("/v1/tasks/1")
                     .characterEncoding("UTF-8"))
                     .andExpect(status().is(200));
         } catch (NestedServletException e){
@@ -122,7 +122,7 @@ public class TaskControllerTest {
     public void shouldDeleteTask() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                .delete("/v1/tasks?taskId=1")
+                .delete("/v1/tasks/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(200));
 
