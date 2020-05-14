@@ -14,7 +14,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/v1/tasks")
 public class TaskController {
 
     @Autowired
@@ -22,28 +22,27 @@ public class TaskController {
     @Autowired
     private TaskMapper mapper;
 
-    @GetMapping(value = "tasks")
+    @GetMapping
     public List<TaskDto> getTasks() {
         return mapper.mapToTaskDtoList(service.getAllTasks());
     }
 
-    @DeleteMapping(value = "tasks/{taskId}")
+    @DeleteMapping(value = "/{taskId}")
     public void deleteTask(@PathVariable Long taskId) {
         service.deleteTask(taskId);
     }
 
-    @PutMapping(value = "tasks")
+    @PutMapping
     public TaskDto updateTask(@RequestBody TaskDto taskDto) {
         return mapper.mapToTaskDto(service.saveTask(mapper.mapToTask(taskDto)));
     }
 
-    @PostMapping(value = "tasks",
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public Task createTask(@RequestBody TaskDto taskDto) {
         return service.saveTask(mapper.mapToTask(taskDto));
     }
 
-    @GetMapping(value = "tasks/{taskId}")
+    @GetMapping(value = "/{taskId}")
     public TaskDto getTask(@PathVariable Long taskId) throws TaskNotFoundException {
         return mapper.mapToTaskDto(service.getTaskWithID(taskId)
                 .orElseThrow(TaskNotFoundException::new));
